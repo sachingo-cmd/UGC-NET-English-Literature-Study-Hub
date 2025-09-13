@@ -141,12 +141,12 @@
     return worksString.split(';').map(work => {
       const trimmed = work.trim();
       const detailMatch = trimmed.match(/\{([^}]*)\}/);
-      const yearMatch = trimmed.match(/$$([^)]+)$$/);
-      const typeMatch = trimmed.match(/$$(.*?)$$/);
-      let title = trimmed.replace(/\{[^}]*\}/g, '').replace(/$$[^)]*$$/g, '').replace(/$$.*?$$/g, '').trim();
-      const year = yearMatch ? yearMatch : '';[1]
-      const type = typeMatch ? typeMatch.trim() : '';[1]
-      const detail = detailMatch ? detailMatch.trim() : '';[1]
+      const yearMatch = trimmed.match(/\(([^)]+)\)/);
+      const typeMatch = trimmed.match(/\[(.*?)\]/);
+      let title = trimmed.replace(/\{[^}]*\}/g, '').replace(/\([^)]*\)/g, '').replace(/\[.*?\]/g, '').trim();
+      const year = yearMatch ? yearMatch[1] : '';
+      const type = typeMatch ? typeMatch[1].trim() : '';
+      const detail = detailMatch ? detailMatch[1].trim() : '';
       return { title, year, type, detail };
     });
   }
@@ -336,7 +336,7 @@
 
   function highlightKeywords(text, keywords) {
     if (!keywords || keywords.length === 0) return escapeHTML(text);
-    const pattern = new RegExp(`(${keywords.map(k => k.replace(/[.*+?^${}()|[$$\$$/g, '\\$&')).join('|')})`, 'gi');
+    const pattern = new RegExp(`(${keywords.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`, 'gi');
     return escapeHTML(text).replace(pattern, '<mark class="highlight">$1</mark>');
   }
 
@@ -397,14 +397,13 @@
   }
 
   async function loadAndPrepareData(forceReload = false) {
-    // Use forceReload parameter to control cache clearing on rescan
     const rawData = await loadCSVWithCache(CSV_URL, AUTHOR_CACHE_KEY, forceReload);
     authors = processAuthorData(rawData);
     flashInfos = processFlashInfoData(rawData);
     filteredAuthors = authors.slice();
     filteredFlashInfos = flashInfos.slice();
 
-    // Merge author and works detail flash infos
+    // Combine author and works detail flash infos
     flashInfos = buildFlashInfoFromAuthors();
 
     const modulesFromFlashInfo = uniqueValues(flashInfos, 'Module');
@@ -477,5 +476,3 @@
 </script>
 </body>
 </html>
-
-[1](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/images/81903888/ddde6235-dbeb-43ad-8c9b-5832241ad7c4/image.jpeg)
