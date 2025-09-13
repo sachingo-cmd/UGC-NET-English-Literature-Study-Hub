@@ -1,1 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>UGC NET English Literature Study Hub</title>
+<style>
+  :root {
+    --color-primary: #6b1a1a;
+    --color-secondary: #d9a441;
+    --color-bg: #f9f6f1;
+    --color-text: #2b2b2b;
+    --color-accent: #7a4a1c;
+    --shadow: 0 4px 8px rgba(0,0,0,0.1);
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--font-family);
+    background: var(--color-bg);
+    color: var(--color-text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+  }
+
+  h1 {
+    color: var(--color-primary);
+    margin-bottom: 0.25rem;
+  }
+
+  /* Controls Container */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    max-width: 960px;
+    margin-bottom: 1rem;
+    justify-content: center;
+  }
+
+  label {
+    font-weight: 600;
+    margin-right: 0.25rem;
+  }
+
+  select, input[type="number"], input[type="text"] {
+    padding: 0.25rem 0.5rem;
+    font-size: 1rem;
+    border: 2px solid var(--color-primary);
+    border-radius: 0.25rem;
+    outline-offset: 2px;
+  }
+
+  button {
+    background-color: var(--color-primary);
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: background-color 0.3s ease;
+  }
+
+  button:hover, button:focus {
+    background-color: var(--color-accent);
+    outline: none;
+  }
+
+  button:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+  }
+
+  /* Flashcards Container */
+  .flashcard-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    max-width: 960px;
+    justify-content: center;
+  }
+
+  /* Flip Card Styles */
+  .flip-card {
+    background-color: transparent;
+    width: 280px;
+    height: 350px;
+    perspective: 1000px;
+    border-radius: 10px;
+  }
+
+  .flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+  }
+
+  .flip-card.flipped .flip-card-inner {
+    transform: rotateY(180deg);
+  }
+
+  .flip-card-front, .flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden; /* Safari */
+    backface-visibility: hidden;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+  }
+
+  /* Front Side */
+  .flip-card-front {
+    background-color: white;
+  }
+
+  /* Back Side */
+  .flip-card-back {
+    background-color: var(--color-secondary);
+    color: var(--color-bg);
+    transform: rotateY(180deg);
+    overflow-y: auto;
+  }
+
+  .flip-card-back ul {
+    padding-left: 1rem;
+    text-align: left;
+    margin-top: 0.5rem;
+    list-style: square;
+  }
+
+  .flip-card-back ul li {
+    margin-bottom: 0.25rem;
+  }
+
+  .author-image {
+    max-width: 80%;
+    max-height: 80%;
+    border-radius: 8px;
+    object-fit: contain;
+    box-shadow: var(--shadow);
+  }
+
+  /* Works List Front Mode Styles */
+  .works-list-front .flip-card-front {
+    background-color: var(--color-secondary);
+    color: var(--color-bg);
+    overflow-y: auto;
+    text-align: left;
+  }
+
+  .works-list-front .flip-card-front ul {
+    margin: 0;
+    padding-left: 1rem;
+    list-style: square;
+  }
+
+  .works-list-front .flip-card-front ul li {
+    margin-bottom: 0.25rem;
+  }
+
+  .works-list-front .flip-card-back {
+    background-color: white;
+    color: var(--color-text);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .works-list-front .flip-card-back .author-name {
+    margin-top: 0.5rem;
+    font-weight: 700;
+  }
+
+  /* Flash Info Section */
+  .flash-info-section {
+    background: white;
+    max-width: 960px;
+    width: 100%;
+    margin-top: 2rem;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+  }
+
+  .flash-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .flash-info-content {
+    max-height: 250px;
+    overflow-y: auto;
+    padding: 0.5rem;
+    border: 2px solid var(--color-primary);
+    border-radius: 8px;
+    background: var(--color-bg);
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  .flash-info-keyword {
+    color: var(--color-primary);
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+
+  .flash-info-author-img {
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 8px;
+    float: left;
+    margin-right: 10px;
+  }
+
+  /* Filtering Counts and Stats */
+  .stats {
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    text-align: center;
+    color: var(--color-primary);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .flip-card {
+      width: 90vw;
+      height: 350px;
+    }
+
+    .controls {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .flash-info-content {
+      max-height: 200px;
+    }
+  }
+
+  mark.highlight {
+    background-color: #ffeb3b;
+    color: #000;
+    font-weight: 700;
+  }
+
+</style>
+</head>
+<body>
+  <h1>UGC NET English Literature Study Hub</h1>
+
+  <div class="controls" aria-label="Study Filters and Controls">
+    <div>
+      <label for="module-select">Module:</label>
+      <select id="module-select" aria-label="Select Module">
+        <option value="">--Select Module--</option>
+      </select>
+    </div>
+    <div>
+      <label for="chapter-select">Chapter:</label>
+      <select id="chapter-select" disabled aria-label="Select Chapter">
+        <option value="">--Select Chapter--</option>
+      </select>
+    </div>
+    <div>
+      <label for="work-type-select">Work Type:</label>
+      <select id="work-type-select" aria-label="Filter by Work Type">
+        <option value="all">All</option>
+        <option value="Drama">Drama</option>
+        <option value="Poetry">Poetry</option>
+        <option value="Essay">Essay</option>
+        <option value="Play">Play</option>
+        <option value="Novel">Novel</option>
+      </select>
+    </div>
+    <div>
+      <label for="year-start">Year Start:</label>
+      <input type="number" id="year-start" placeholder="e.g. 1800" min="1000" max="2100" aria-label="Start Year" />
+    </div>
+    <div>
+      <label for="year-end">Year End:</label>
+      <input type="number" id="year-end" placeholder="e.g. 2000" min="1000" max="2100" aria-label="End Year" />
+    </div>
+    <div>
+      <button id="apply-filter-btn" title="Apply filters">Apply Filters</button>
+      <button id="clear-filter-btn" title="Clear all filters">Clear Filters</button>
+    </div>
+    <div>
+      <label for="mode-select">Flashcard Mode:</label>
+      <select id="mode-select" aria-label="Select Flashcard Display Mode">
+        <option value="authorfront">Author Image Front</option>
+        <option value="worksfront">Works Front</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="stats" role="region" aria-live="polite" id="stats-info">
+    Authors Loaded: 0 | Works Loaded: 0 | Flash Infos Loaded: 0
+  </div>
+
+  <div class="flashcard-container" id="flashcard-container" aria-label="Flashcards Section">
+    <!-- Flashcards will be injected here -->
+  </div>
+
+  <section class="flash-info-section" aria-label="Flash Info Section">
+    <div class="flash-info-header">
+      <h2>Flash Info Game</h2>
+      <button id="random-flash-info-btn" disabled>Show Random Flash Info</button>
+    </div>
+    <input type="text" id="search-flash-info" placeholder="Search flash info keywords..." aria-label="Search Flash Info" />
+    <div class="flash-info-content" id="flash-info-content" tabindex="0">
+      <p>Load and select module/chapter to start.</p>
+    </div>
+  </section>
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+<script>
+(function() {
+  // Replace with your actual published Google Sheets CSV URLs
+  const CSV_AUTHOR_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRklfZ7_your_author_csv_url/pub?output=csv";
+  const CSV_FLASHINFO_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRklfZ7_your_flashinfo_csv_url/pub?output=csv";
+
+  // LocalStorage keys
+  const AUTHOR_CACHE_KEY = "authorFlashcardsCache";
+  const FLASHINFO_CACHE_KEY = "flashInfoCache";
+
+  // State variables
+  let authors = [];
+  let flashInfos = [];
+  let filteredAuthors = [];
+  let filteredFlashInfos = [];
+  let currentFlashInfoIndicesShown = new Set();
+
+  // UI References
+  const moduleSelect = document.getElementById('module-select');
+  const chapterSelect = document.getElementById('chapter-select');
+  const workTypeSelect = document.getElementById('work-type-select');
+  const yearStartInput = document.getElementById('year-start');
+  const yearEndInput = document.getElementById('year-end');
+  const applyFilterBtn = document.getElementById('apply-filter-btn');
+  const clearFilterBtn = document.getElementById('clear-filter-btn');
+  const modeSelect = document.getElementById('mode-select');
+  const statsInfo = document.getElementById('stats-info');
+  const flashcardContainer = document.getElementById('flashcard-container');
+
+  const randomFlashInfoBtn = document.getElementById('random-flash-info-btn');
+  const flashInfoContent = document.getElementById('flash-info-content');
+  const searchFlashInfoInput = document.getElementById('search-flash-info');
+
+  // Helper Functions
+
+  // Parse works string to array of { title, year, type }
+  function parseWorks(worksString) {
+    if (!worksString) return [];
+    return worksString.split(';').map(work => {
+      const trimmed = work.trim();
+      const yearMatch = trimmed.match(/\(([^)]+)\)/);
+      const typeMatch = trimmed.match(/\[(.*?)\]/); // Type indicated in [Type]
+      const title = trimmed.replace(/\([^)]*\)/g, '').replace(/\[.*?\]/g, '').trim();
+      const year = yearMatch ? yearMatch[1] : '';
+      const type = typeMatch ? typeMatch[1].trim() : '';
+      return { title, year, type };
+    });
+  }
+
+  // Load CSV from URL with cache fallback
+  function loadCSVWithCache(url, cacheKey) {
+    return new Promise(resolve => {
+      const cachedData = localStorage.getItem(cacheKey);
+      if(cachedData) {
+        try {
+          const parsed = JSON.parse(cachedData);
+          resolve(parsed);
+          return;
+        } catch (e) {
+          console.error('Error parsing cache', e);
+        }
+      }
+
+      Papa.parse(url, {
+        download: true,
+        header: true,
+        complete: results => {
+          localStorage.setItem(cacheKey, JSON.stringify(results.data));
+          resolve(results.data);
+        },
+        error: () => resolve([])
+      });
+    });
+  }
+
+  // Extract unique values from dataset field
+  function uniqueValues(data, field) {
+    return [...new Set(data.map(item => item[field]).filter(x => x))].sort();
+  }
+
+  function clearSelectOptions(selectElem) {
+    selectElem.innerHTML = '';
+  }
+
+  function fillSelectOptions(selectElem, options, placeholder = '--Select--') {
+    clearSelectOptions(selectElem);
+    const placeholderOption = document.createElement('option');
+    placeholderOption.textContent = placeholder;
+    placeholderOption.value = '';
+    selectElem.appendChild(placeholderOption);
+    options.forEach(opt => {
+      const optionElem = document.createElement('option');
+      optionElem.value = opt;
+      optionElem.textContent = opt;
+      selectElem.appendChild(optionElem);
+    });
+  }
+
+  // Filter authors by module, chapter, work type, year range
+  function filterAuthors() {
+    let filtered = authors;
+
+    const selectedModule = moduleSelect.value;
+    const selectedChapter = chapterSelect.value;
+    const workType = workTypeSelect.value;
+    const yearStart = parseInt(yearStartInput.value, 10);
+    const yearEnd = parseInt(yearEndInput.value, 10);
+
+    if (selectedModule) {
+      filtered = filtered.filter(author => {
+        if (!author.Module || !author.Chapter) return false;
+        if (author.Module !== selectedModule) return false;
+        if (selectedChapter && author.Chapter !== selectedChapter) return false;
+        return true;
+      });
+    }
+
+    if (workType !== 'all') {
+      filtered = filtered.filter(author => {
+        return author.works.some(w => w.type.toLowerCase() === workType.toLowerCase());
+      });
+    }
+
+    if (!isNaN(yearStart) || !isNaN(yearEnd)) {
+      filtered = filtered.filter(author => {
+        return author.works.some(w => {
+          const y = parseInt(w.year, 10);
+          if (!y) return false;
+          if (!isNaN(yearStart) && y < yearStart) return false;
+          if (!isNaN(yearEnd) && y > yearEnd) return false;
+          return true;
+        });
+      });
+    }
+    filteredAuthors = filtered;
+  }
+
+  // Render flashcards based on filteredAuthors and mode
+  function renderFlashcards() {
+    flashcardContainer.innerHTML = '';
+    const mode = modeSelect.value;
+
+    if (filteredAuthors.length === 0) {
+      flashcardContainer.innerHTML = '<p>No authors found with the applied filters.</p>';
+      return;
+    }
+
+    filteredAuthors.forEach(author => {
+      const card = document.createElement('div');
+      card.classList.add('flip-card');
+
+      if (mode === 'worksfront') {
+        card.classList.add('works-list-front');
+      }
+
+      const inner = document.createElement('div');
+      inner.classList.add('flip-card-inner');
+
+      const front = document.createElement('div');
+      front.classList.add('flip-card-front');
+      const back = document.createElement('div');
+      back.classList.add('flip-card-back');
+
+      if(mode === 'authorfront') {
+        // Front: Author Image
+        const img = document.createElement('img');
+        img.src = author.ImageURL;
+        img.alt = `Image of ${author.AuthorName}`;
+        img.className = 'author-image';
+        front.appendChild(img);
+
+        // Back: Author name + birth year + works
+        const name = document.createElement('h3');
+        name.textContent = `${author.AuthorName} (${author.BirthYear || 'N/A'})`;
+        back.appendChild(name);
+
+        const ul = document.createElement('ul');
+        author.works.forEach(w => {
+          const li = document.createElement('li');
+          li.textContent = `${w.title} ${w.year ? '('+w.year+')' : ''} ${w.type ? '['+w.type+']' : ''}`;
+          ul.appendChild(li);
+        });
+        back.appendChild(ul);
+      } else {
+        // Works Front mode
+        const ul = document.createElement('ul');
+        author.works.forEach(w => {
+          const li = document.createElement('li');
+          li.textContent = `${w.title} ${w.year ? '('+w.year+')' : ''} ${w.type ? '['+w.type+']' : ''}`;
+          ul.appendChild(li);
+        });
+        front.appendChild(ul);
+
+        // Back: Image + Author Name
+        const img = document.createElement('img');
+        img.src = author.ImageURL;
+        img.alt = `Image of ${author.AuthorName}`;
+        img.className = 'author-image';
+        back.appendChild(img);
+
+        const name = document.createElement('h3');
+        name.textContent = `${author.AuthorName} (${author.BirthYear || 'N/A'})`;
+        back.appendChild(name);
+      }
+
+      inner.appendChild(front);
+      inner.appendChild(back);
+      card.appendChild(inner);
+
+      card.addEventListener('click', () => {
+        card.classList.toggle('flipped');
+      });
+
+      flashcardContainer.appendChild(card);
+    });
+
+    updateStats();
+  }
+
+  // Filter flash info by module, chapter, and keyword search
+  function filterFlashInfos() {
+    let filtered = flashInfos;
+    const selectedModule = moduleSelect.value;
+    const selectedChapter = chapterSelect.value;
+    const searchTerm = searchFlashInfoInput.value.trim().toLowerCase();
+
+    if(selectedModule) {
+      filtered = filtered.filter(item => item.Module === selectedModule);
+      if(selectedChapter) {
+        filtered = filtered.filter(item => item.Chapter === selectedChapter);
+      }
+    }
+
+    if(searchTerm) {
+      filtered = filtered.filter(item => {
+        return (item.AuthorName && item.AuthorName.toLowerCase().includes(searchTerm)) ||
+               (item.Works && item.Works.toLowerCase().includes(searchTerm)) ||
+               (item.ImportantKeywords && item.ImportantKeywords.toLowerCase().includes(searchTerm));
+      });
+    }
+
+    filteredFlashInfos = filtered;
+
+    currentFlashInfoIndicesShown = new Set();
+
+    randomFlashInfoBtn.disabled = filteredFlashInfos.length === 0;
+  }
+
+  function escapeHTML(text) {
+    return text.replace(/[&<>"']/g, function(m) {
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]);
+    });
+  }
+
+  // Highlight matched keywords in text
+  function highlightKeywords(text, keywords) {
+    if (!keywords || keywords.length === 0) return escapeHTML(text);
+    const pattern = new RegExp(`(${keywords.map(k => k.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')).join('|')})`, 'gi');
+    return escapeHTML(text).replace(pattern, '<mark class="highlight">$1</mark>');
+  }
+
+  // Show a random flash info entry avoiding immediate repeats until all shown
+  function showRandomFlashInfo() {
+    if(filteredFlashInfos.length === 0) {
+      flashInfoContent.innerHTML = '<p>No flash info available for selected filters and search.</p>';
+      return;
+    }
+
+    if(currentFlashInfoIndicesShown.size >= filteredFlashInfos.length) {
+      currentFlashInfoIndicesShown.clear();
+    }
+
+    let idx;
+    do {
+      idx = Math.floor(Math.random() * filteredFlashInfos.length);
+    } while(currentFlashInfoIndicesShown.has(idx) && currentFlashInfoIndicesShown.size < filteredFlashInfos.length);
+
+    currentFlashInfoIndicesShown.add(idx);
+
+    const item = filteredFlashInfos[idx];
+
+    const keywords = [];
+    if(item.ImportantKeywords) keywords.push(...item.ImportantKeywords.split(';').map(k => k.trim()));
+    if(item.AuthorName && item.AuthorName.toLowerCase() !== 'anonymous') keywords.push(item.AuthorName);
+    if(item.Works) keywords.push(...item.Works.split(';').map(w => w.trim()));
+
+    let html = '';
+    if(item.ImageURL) {
+      html += `<img src="${item.ImageURL}" alt="Image of ${escapeHTML(item.AuthorName || '')}" class="flash-info-author-img" />`;
+    }
+    html += `<div class="flash-info-keyword">${escapeHTML(keywords[0] || '')}</div>`;
+    html += `<p>${highlightKeywords(item.FlashInfoText || '', keywords)}</p>`;
+
+    flashInfoContent.innerHTML = html;
+  }
+
+  // Update the authors, works, and flash info counts in the stats area
+  function updateStats() {
+    const totalAuthors = authors.length;
+    let totalWorks = 0;
+    authors.forEach(a => { totalWorks += a.works.length; });
+    const totalFlashInfos = flashInfos.length;
+    statsInfo.textContent = `Authors Loaded: ${totalAuthors} | Works Loaded: ${totalWorks} | Flash Infos Loaded: ${totalFlashInfos}`;
+  }
+
+  // Reset filters and UI to initial state
+  function resetFilters() {
+    moduleSelect.value = '';
+    chapterSelect.value = '';
+    chapterSelect.disabled = true;
+    workTypeSelect.value = 'all';
+    yearStartInput.value = '';
+    yearEndInput.value = '';
+    searchFlashInfoInput.value = '';
+    filteredAuthors = authors.slice();
+    filteredFlashInfos = flashInfos.slice();
+    currentFlashInfoIndicesShown.clear();
+    randomFlashInfoBtn.disabled = filteredFlashInfos.length === 0;
+    renderFlashcards();
+    flashInfoContent.innerHTML = '<p>Load and select module/chapter to start.</p>';
+  }
+
+  // Populate chapters dropdown based on selected module (from flash info data)
+  function populateChapters() {
+    const selectedModule = moduleSelect.value;
+    if(!selectedModule) {
+      chapterSelect.innerHTML = '<option value="">--Select Chapter--</option>';
+      chapterSelect.disabled = true;
+      return;
+    }
+    // Get unique chapters for the selected module
+    const chapters = uniqueValues(flashInfos.filter(f => f.Module === selectedModule), 'Chapter');
+    fillSelectOptions(chapterSelect, chapters, '--Select Chapter--');
+    chapterSelect.disabled = false;
+  }
+
+  // Process author CSV data to structured format
+  function processAuthorData(rows) {
+    return rows.map(row => ({
+      ID: row.ID || '',
+      ImageURL: row.ImageURL || '',
+      AuthorName: row.AuthorName || '',
+      BirthYear: row.BirthYear || '',
+      Module: row.Module || '',
+      Chapter: row.Chapter || '',
+      works: parseWorks(row.Works)
+    })).filter(a => a.AuthorName);
+  }
+
+  // Process flash info CSV data
+  function processFlashInfoData(rows) {
+    return rows.map(row => ({
+      Module: row.Module || '',
+      Chapter: row.Chapter || '',
+      AuthorName: row.AuthorName || '',
+      Works: row.Works || '',
+      ImportantKeywords: row.ImportantKeywords || '',
+      ImageURL: row.ImageURL || '',
+      FlashInfoText: row.FlashInfoText || ''
+    })).filter(f => f.Module && f.Chapter);
+  }
+
+  // Main app initialization workflow
+  async function initApp() {
+    const authorData = await loadCSVWithCache(CSV_AUTHOR_URL, AUTHOR_CACHE_KEY);
+    authors = processAuthorData(authorData);
+
+    const flashInfoData = await loadCSVWithCache(CSV_FLASHINFO_URL, FLASHINFO_CACHE_KEY);
+    flashInfos = processFlashInfoData(flashInfoData);
+
+    filteredAuthors = authors.slice();
+    filteredFlashInfos = flashInfos.slice();
+
+    // Merge modules from both datasets for a comprehensive module list
+    const modulesFromFlashInfo = uniqueValues(flashInfos, 'Module');
+    const modulesFromAuthors = uniqueValues(authors, 'Module');
+    const combinedModules = [...new Set([...modulesFromFlashInfo, ...modulesFromAuthors])].sort();
+
+    fillSelectOptions(moduleSelect, combinedModules, '--Select Module--');
+
+    updateStats();
+    renderFlashcards();
+
+    randomFlashInfoBtn.disabled = filteredFlashInfos.length === 0;
+
+    flashInfoContent.innerHTML = '<p>Load and select module/chapter to start.</p>';
+  }
+
+  // Event Listeners
+  moduleSelect.addEventListener('change', () => {
+    populateChapters();
+    applyFilters();
+  });
+
+  chapterSelect.addEventListener('change', () => {
+    applyFilters();
+  });
+
+  workTypeSelect.addEventListener('change', () => {
+    applyFilters();
+  });
+
+  applyFilterBtn.addEventListener('click', () => {
+    applyFilters();
+  });
+
+  clearFilterBtn.addEventListener('click', () => {
+    resetFilters();
+  });
+
+  modeSelect.addEventListener('change', () => {
+    renderFlashcards();
+  });
+
+  searchFlashInfoInput.addEventListener('input', () => {
+    filterFlashInfos();
+  });
+
+  randomFlashInfoBtn.addEventListener('click', () => {
+    showRandomFlashInfo();
+  });
+
+  function applyFilters() {
+    filterAuthors();
+    renderFlashcards();
+    filterFlashInfos();
+  }
+
+  // Initialize the app on page load
+  initApp();
+
+})();
+</script>
+</body>
+</html>
 
