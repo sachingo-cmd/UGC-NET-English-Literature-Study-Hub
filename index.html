@@ -136,33 +136,51 @@
   const flashInfoContent = document.getElementById('flash-info-content');
   const searchFlashInfoInput = document.getElementById('search-flash-info');
 
-  // Updated parseWorks that extracts optional details in curly braces {}
   function parseWorks(worksString) {
     if (!worksString) return [];
     return worksString.split(';').map(work => {
       const trimmed = work.trim();
       const detailMatch = trimmed.match(/\{([^}]*)\}/);
-      const yearMatch = trimmed.match(/\(([^)]+)\)/);
-      const typeMatch = trimmed.match(/\[(.*?)\]/);
-      let title = trimmed.replace(/\{[^}]*\}/g, '').replace(/\([^)]*\)/g, '').replace(/\[.*?\]/g, '').trim();
-      const year = yearMatch ? yearMatch[1] : '';
-      const type = typeMatch ? typeMatch[1].trim() : '';
-      const detail = detailMatch ? detailMatch[1].trim() : '';
+      const yearMatch = trimmed.match(/$$([^)]+)$$/);
+      const typeMatch = trimmed.match(/$$(.*?)$$/);
+      let title = trimmed.replace(/\{[^}]*\}/g, '').replace(/$$[^)]*$$/g, '').replace(/$$.*?$$/g, '').trim();
+      const year = yearMatch ? yearMatch : '';[1]
+      const type = typeMatch ? typeMatch.trim() : '';[1]
+      const detail = detailMatch ? detailMatch.trim() : '';[1]
       return { title, year, type, detail };
     });
   }
 
-  function loadCSVWithCache(url, cacheKey) {
+  function loadCSVWithCache(url, cacheKey, forceReload = false) {
     return new Promise(resolve => {
-      localStorage.removeItem(cacheKey); // force reload for fresh data on rescan
+      if (!forceReload) {
+        const cachedData = localStorage.getItem(cacheKey);
+        if (cachedData) {
+          try {
+            const parsed = JSON.parse(cachedData);
+            console.log('Loaded cached data:', cacheKey, parsed.length);
+            resolve(parsed);
+            return;
+          } catch(e) {
+            console.error('Cache parse error', e);
+          }
+        }
+      } else {
+        localStorage.removeItem(cacheKey);
+      }
+
       Papa.parse(url, {
         download: true,
         header: true,
         complete: results => {
+          console.log('Fetched fresh data:', cacheKey, results.data.length);
           localStorage.setItem(cacheKey, JSON.stringify(results.data));
           resolve(results.data);
         },
-        error: () => resolve([])
+        error: (err) => {
+          console.error('PapaParse error:', err);
+          resolve([]);
+        }
       });
     });
   }
@@ -214,11 +232,10 @@
     filteredAuthors = filtered;
   }
 
-  // Modified: Include works' details as separate flash info items
   function buildFlashInfoFromAuthors() {
     let combined = [];
     flashInfos.forEach(item => {
-      combined.push(item); // existing author flash infos
+      combined.push(item);
     });
     authors.forEach(author => {
       author.works.forEach(work => {
@@ -228,7 +245,7 @@
             Chapter: author.Chapter,
             AuthorName: author.AuthorName,
             Works: work.title,
-            ImportantKeywords: work.title, // also use title as keyword
+            ImportantKeywords: work.title,
             ImageURL: author.ImageURL,
             FlashInfoText: work.detail.trim()
           });
@@ -319,7 +336,7 @@
 
   function highlightKeywords(text, keywords) {
     if (!keywords || keywords.length === 0) return escapeHTML(text);
-    const pattern = new RegExp(`(${keywords.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`, 'gi');
+    const pattern = new RegExp(`(${keywords.map(k => k.replace(/[.*+?^${}()|[$$\$$/g, '\\$&')).join('|')})`, 'gi');
     return escapeHTML(text).replace(pattern, '<mark class="highlight">$1</mark>');
   }
 
@@ -379,57 +396,17 @@
     chapterSelect.disabled = false;
   }
 
-  function processAuthorData(rows) {
-    return rows.map(row => ({
-      ID: row.ID || '',
-      ImageURL: row.ImageURL || '',
-      AuthorName: row.AuthorName || '',
-      BirthYear: row.BirthYear || '',
-      Module: row.Module || '',
-      Chapter: row.Chapter || '',
-      works: parseWorks(row.Works)
-    })).filter(a => a.AuthorName);
-  }
-
-  function processFlashInfoData(rows) {
-    // Original flash info from CSV (author-level)
-    let flashInfoOnly = rows.map(row => ({
-      Module: row.Module || '',
-      Chapter: row.Chapter || '',
-      AuthorName: row.AuthorName || '',
-      Works: row.Works || '',
-      ImportantKeywords: row.ImportantKeywords || '',
-      ImageURL: row.ImageURL || '',
-      FlashInfoText: row.FlashInfoText || ''
-    })).filter(f => f.Module && f.Chapter);
-
-    // Append work-detail flash info from authors
-    const authorsFromRows = processAuthorData(rows);
-    let workLevelFlashInfos = [];
-    authorsFromRows.forEach(author => {
-      author.works.forEach(work => {
-        if(work.detail && work.detail.length > 0) {
-          workLevelFlashInfos.push({
-            Module: author.Module,
-            Chapter: author.Chapter,
-            AuthorName: author.AuthorName,
-            Works: work.title,
-            ImportantKeywords: work.title,
-            ImageURL: author.ImageURL,
-            FlashInfoText: work.detail.trim()
-          });
-        }
-      });
-    });
-    return flashInfoOnly.concat(workLevelFlashInfos);
-  }
-
-  async function loadAndPrepareData() {
-    const rawData = await loadCSVWithCache(CSV_URL, AUTHOR_CACHE_KEY);
+  async function loadAndPrepareData(forceReload = false) {
+    // Use forceReload parameter to control cache clearing on rescan
+    const rawData = await loadCSVWithCache(CSV_URL, AUTHOR_CACHE_KEY, forceReload);
     authors = processAuthorData(rawData);
     flashInfos = processFlashInfoData(rawData);
     filteredAuthors = authors.slice();
     filteredFlashInfos = flashInfos.slice();
+
+    // Merge author and works detail flash infos
+    flashInfos = buildFlashInfoFromAuthors();
+
     const modulesFromFlashInfo = uniqueValues(flashInfos, 'Module');
     const modulesFromAuthors = uniqueValues(authors, 'Module');
     const combinedModules = [...new Set([...modulesFromFlashInfo, ...modulesFromAuthors])].sort();
@@ -445,5 +422,60 @@
   workTypeSelect.addEventListener('change', () => {applyFilters();});
   applyFilterBtn.addEventListener('click', () => {applyFilters();});
   clearFilterBtn.addEventListener('click', () => {resetFilters();});
-  rescanBtn.addEventListener('click', () => {loadAndPrepareData();});
+  rescanBtn.addEventListener('click', () => {loadAndPrepareData(true);});
   modeSelect.addEventListener('change', () => {renderFlashcards();});
+  searchFlashInfoInput.addEventListener('input', () => {filterFlashInfos();});
+  randomFlashInfoBtn.addEventListener('click', () => {showRandomFlashInfo();});
+
+  toggleFlashcardsBtn.addEventListener('click', () => {
+    const isVisible = flashcardContainer.style.display !== 'none';
+    if (isVisible) {
+      flashcardContainer.style.display = 'none';
+      toggleFlashcardsBtn.textContent = 'Show Flashcards';
+      toggleFlashcardsBtn.setAttribute('aria-pressed', 'false');
+    } else {
+      flashcardContainer.style.display = 'flex';
+      toggleFlashcardsBtn.textContent = 'Hide Flashcards';
+      toggleFlashcardsBtn.setAttribute('aria-pressed', 'true');
+    }
+  });
+
+  function applyFilters() {
+    filterAuthors();
+    renderFlashcards();
+    filterFlashInfos();
+  }
+
+  function processAuthorData(rows) {
+    return rows.map(row => ({
+      ID: row.ID || '',
+      ImageURL: row.ImageURL || '',
+      AuthorName: row.AuthorName || '',
+      BirthYear: row.BirthYear || '',
+      Module: row.Module || '',
+      Chapter: row.Chapter || '',
+      works: parseWorks(row.Works)
+    })).filter(a => a.AuthorName);
+  }
+
+  function processFlashInfoData(rows) {
+    let flashInfoOnly = rows.map(row => ({
+      Module: row.Module || '',
+      Chapter: row.Chapter || '',
+      AuthorName: row.AuthorName || '',
+      Works: row.Works || '',
+      ImportantKeywords: row.ImportantKeywords || '',
+      ImageURL: row.ImageURL || '',
+      FlashInfoText: row.FlashInfoText || ''
+    })).filter(f => f.Module && f.Chapter);
+    return flashInfoOnly;
+  }
+
+  // Initialize app on load
+  loadAndPrepareData();
+})();
+</script>
+</body>
+</html>
+
+[1](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/images/81903888/ddde6235-dbeb-43ad-8c9b-5832241ad7c4/image.jpeg)
