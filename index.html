@@ -39,7 +39,7 @@
     transition: height 0.3s ease;
   }
   .flip-card.expanded {
-    height: 350px; /* expanded height */
+    height: 350px;
   }
   .flip-card-inner {
     position: relative; width: 100%; height: 100%; text-align: center;
@@ -62,7 +62,11 @@
     overflow-y: auto;
   }
   .flip-card-back ul {
-    padding-left: 0.5rem; text-align: left; margin-top: 0.25rem; list-style: square; font-size: 0.75rem;
+    padding-left: 0.5rem;
+    text-align: left;
+    margin-top: 0.25rem;
+    list-style: square;
+    font-size: 0.9rem; /* increased font size here */
   }
   .flip-card-back ul li { margin-bottom: 0.15rem; }
   .author-image {
@@ -71,7 +75,7 @@
   }
   .works-list-front .flip-card-front {
     background-color: var(--color-secondary); color: var(--color-bg); overflow-y: auto;
-    text-align: left; font-size: 0.75rem;
+    text-align: left; font-size: 0.9rem; /* increased font size here */
   }
   .works-list-front .flip-card-front ul {
     margin: 0; padding-left: 0.5rem; list-style: square;
@@ -270,7 +274,8 @@
 
     if(selectedModule) {
       filtered = filtered.filter(author => author.Module === selectedModule && (!selectedChapter || author.Chapter === selectedChapter));
-    } else {
+    }
+    else {
       filtered = [];
     }
     if (workType !== 'all') {
@@ -289,8 +294,8 @@
   }
 
   function buildFlashInfoFromAuthors() {
-    let combined = [];
-    // Add author flash info entries
+    const combined = [];
+    // Add author flash info entries (title = author name)
     flashInfos.forEach(item => {
       if(item.FlashInfoText && item.FlashInfoText.trim() !== '') {
         combined.push({
@@ -397,14 +402,14 @@
       card.appendChild(inner);
 
       card.addEventListener('click', () => {
-        // Close other flipped cards
+        // Unflip other cards and collapse them
         document.querySelectorAll('.flip-card.flipped').forEach(el => {
-          if(el !== card) {
+          if(el !== card){
             el.classList.remove('flipped');
             el.classList.remove('expanded');
           }
         });
-        // Toggle this card
+        // Toggle current card flipped and expanded classes
         card.classList.toggle('flipped');
         card.classList.toggle('expanded');
       });
@@ -417,7 +422,7 @@
   function filterFlashInfos() {
     const selectedModule = moduleSelect.value;
     const selectedChapter = chapterSelect.value;
-    if(selectedModule && selectedChapter) {
+    if(selectedModule && selectedChapter){
       filteredFlashInfos = buildFlashInfoFromAuthors().filter(i => i.Module === selectedModule && i.Chapter === selectedChapter);
     } else {
       filteredFlashInfos = [];
@@ -426,14 +431,14 @@
     randomFlashInfoBtn.disabled = filteredFlashInfos.length === 0;
   }
 
-  function escapeHTML(text) {
+  function escapeHTML(text){
     return text ? text.replace(/[&<>"']/g, function(m) {
       return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];
     }) : '';
   }
 
   function showRandomFlashInfo() {
-    if(filteredFlashInfos.length === 0) {
+    if(filteredFlashInfos.length === 0){
       flashInfoContent.innerHTML = '<p>No flash info available for selected module and chapter.</p>';
       return;
     }
@@ -445,7 +450,6 @@
     currentFlashInfoIndicesShown.add(idx);
     const item = filteredFlashInfos[idx];
     let html = '';
-    // Show author image only for author/work type
     if(item.Type === 'author' || item.Type === 'work'){
       if(item.ImageURL) html += `<img src="${item.ImageURL}" alt="Image of ${escapeHTML(item.AuthorName || item.Title || '')}" class="flash-info-author-img" />`;
     }
@@ -454,14 +458,14 @@
     flashInfoContent.innerHTML = html;
   }
 
-  function updateStats() {
+  function updateStats(){
     const totalAuthors = authors.length;
     let totalWorks = 0; authors.forEach(a => { totalWorks += a.works.length; });
     const totalFlashInfos = flashInfos.length;
     statsInfo.textContent = `Authors Loaded: ${totalAuthors} | Works Loaded: ${totalWorks} | Flash Infos Loaded: ${totalFlashInfos}`;
   }
 
-  function resetFilters() {
+  function resetFilters(){
     moduleSelect.value = '';
     chapterSelect.value = '';
     chapterSelect.disabled = true;
@@ -476,9 +480,9 @@
     randomFlashInfoBtn.disabled = true;
   }
 
-  function populateChapters() {
+  function populateChapters(){
     const selectedModule = moduleSelect.value;
-    if(!selectedModule) {
+    if(!selectedModule){
       chapterSelect.innerHTML = '<option value="">--Select Chapter--</option>';
       chapterSelect.disabled = true;
       return;
@@ -488,7 +492,7 @@
     chapterSelect.disabled = false;
   }
 
-  async function loadAndPrepareData(forceReload = false) {
+  async function loadAndPrepareData(forceReload = false){
     const rawData = await loadCSVWithCache(CSV_URL, AUTHOR_CACHE_KEY, forceReload);
     authors = processAuthorData(rawData);
     flashInfos = processFlashInfoData(rawData);
@@ -544,24 +548,24 @@
 
   toggleFlashcardsBtn.addEventListener('click', () => {
     const isVisible = flashcardContainer.style.display !== 'none';
-    if (isVisible) {
+    if(isVisible){
       flashcardContainer.style.display = 'none';
       toggleFlashcardsBtn.textContent = 'Show Flashcards';
       toggleFlashcardsBtn.setAttribute('aria-pressed', 'false');
-    } else {
+    } else{
       flashcardContainer.style.display = 'flex';
       toggleFlashcardsBtn.textContent = 'Hide Flashcards';
       toggleFlashcardsBtn.setAttribute('aria-pressed', 'true');
     }
   });
 
-  function applyFilters() {
+  function applyFilters(){
     filterAuthors();
     renderFlashcards();
     filterFlashInfos();
   }
 
-  function processAuthorData(rows) {
+  function processAuthorData(rows){
     return rows.map(row => ({
       ID: row.ID || '',
       ImageURL: row.ImageURL || '',
@@ -573,7 +577,7 @@
     })).filter(a => a.AuthorName);
   }
 
-  function processFlashInfoData(rows) {
+  function processFlashInfoData(rows){
     return rows.map(row => ({
       Module: row.Module || '',
       Chapter: row.Chapter || '',
