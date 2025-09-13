@@ -5,124 +5,118 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>UGC NET English Literature Study Hub</title>
 <style>
-  :root {
-    --color-primary: #6b1a1a;
-    --color-secondary: #d9a441;
-    --color-bg: #f9f6f1;
-    --color-text: #2b2b2b;
-    --color-accent: #7a4a1c;
-    --shadow: 0 4px 8px rgba(0,0,0,0.1);
-    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  * { box-sizing: border-box; }
-  body { margin:0;font-family:var(--font-family);background:var(--color-bg);color:var(--color-text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:1rem;}
-  h1 { color: var(--color-primary); margin-bottom: 0.25rem; }
-  .controls {display:flex;flex-wrap:wrap;gap:1rem;max-width:960px;margin-bottom:1rem;justify-content:center;}
-  label {font-weight:600;margin-right:0.25rem;}
-  select, input[type="number"], input[type="text"] {padding:0.25rem 0.5rem;font-size:1rem;border:2px solid var(--color-primary);border-radius:0.25rem;outline-offset:2px;}
-  button {background-color:var(--color-primary);border:none;color:white;padding:0.5rem 1rem;font-weight:600;border-radius:0.25rem;cursor:pointer;box-shadow:var(--shadow);transition:background-color 0.3s ease;}
-  button:hover, button:focus {background-color:var(--color-accent);outline:none;}
-  button:disabled {background-color:#aaa;cursor:not-allowed;}
-  .flashcard-container {display:flex;flex-wrap:wrap;gap:1rem;max-width:960px;justify-content:center;}
-  .flip-card {background-color:transparent;width:140px;height:175px; /* half size */ perspective: 1000px; border-radius: 10px;}
-  .flip-card-inner {position:relative;width:100%;height:100%;text-align:center;transition:transform 0.8s;transform-style:preserve-3d;border-radius:10px;box-shadow:var(--shadow);cursor:pointer;}
-  .flip-card.flipped .flip-card-inner {transform:rotateY(180deg);}
-  .flip-card-front, .flip-card-back {position:absolute;width:100%;height:100%;-webkit-backface-visibility:hidden;backface-visibility:hidden;border-radius:10px;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:0.5rem;}
-  .flip-card-front {background-color:white;}
-  .flip-card-back {background-color:var(--color-secondary);color:var(--color-bg);transform:rotateY(180deg);overflow-y:auto;}
-  .flip-card-back ul {padding-left:0.5rem;text-align:left;margin-top:0.25rem;list-style:square; font-size: 0.75rem;}
-  .flip-card-back ul li {margin-bottom:0.15rem;}
-  .author-image {max-width:90%;max-height:90%;border-radius:8px;object-fit:contain;box-shadow:var(--shadow);}
-  .works-list-front .flip-card-front {background-color:var(--color-secondary);color:var(--color-bg);overflow-y:auto;text-align:left; font-size: 0.75rem;}
-  .works-list-front .flip-card-front ul {margin:0;padding-left:0.5rem;list-style:square;}
-  .works-list-front .flip-card-front ul li {margin-bottom:0.15rem;}
-  .works-list-front .flip-card-back {background-color:white;color:var(--color-text);flex-direction:column;justify-content:center;align-items:center; font-size: 0.75rem;}
-  .works-list-front .flip-card-back .author-name {margin-top:0.25rem;font-weight:700;}
-  .flash-info-section {background:white;max-width:960px;width:100%;margin-top:0;margin-bottom:1rem;padding:1rem;border-radius:10px;box-shadow:var(--shadow);}
-  .flash-info-header {display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
-  .flash-info-content {max-height:250px;overflow-y:auto;padding:0.5rem;border:2px solid var(--color-primary);border-radius:8px;background:var(--color-bg);font-size:1rem;line-height:1.4;white-space: pre-wrap;}
-  .flash-info-keyword {color:var(--color-primary);font-weight:700;margin-bottom:0.25rem;}
-  .flash-info-author-img {max-width:80px;max-height:80px;border-radius:8px;float:left;margin-right:10px;}
-  .stats {font-size:0.9rem;margin-top:0.5rem;text-align:center;color:var(--color-primary);}
-  @media (max-width: 768px) {
-    .flip-card {width:90vw;height:175px;}
-    .controls {flex-direction:column;gap:0.5rem;}
-    .flash-info-content {max-height:200px;}
-  }
+:root {
+  --color-primary: #6b1a1a;
+  --color-secondary: #d9a441;
+  --color-bg: #f9f6f1;
+  --color-text: #2b2b2b;
+  --color-accent: #7a4a1c;
+  --shadow: 0 4px 8px rgba(0,0,0,0.1);
+  --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin:0;font-family:var(--font-family);background:var(--color-bg);color:var(--color-text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:1rem;}
+h1 { color: var(--color-primary); margin-bottom: 0.25rem; }
+.controls {display:flex;flex-wrap:wrap;gap:1rem;max-width:960px;margin-bottom:1rem;justify-content:center;}
+label {font-weight:600;margin-right:0.25rem;}
+select, input[type="number"] {padding:0.25rem 0.5rem;font-size:1rem;border:2px solid var(--color-primary);border-radius:0.25rem;outline-offset:2px;}
+button {background-color:var(--color-primary);border:none;color:white;padding:0.5rem 1rem;font-weight:600;border-radius:0.25rem;cursor:pointer;box-shadow:var(--shadow);transition:background-color 0.3s ease;}
+button:hover, button:focus {background-color:var(--color-accent);outline:none;}
+button:disabled {background-color:#aaa;cursor:not-allowed;}
+.flashcard-container {display:flex;flex-wrap:wrap;gap:1rem;max-width:960px;justify-content:center;}
+.flip-card {background-color:transparent;width:140px;height:175px; perspective: 1000px; border-radius: 10px;}
+.flip-card-inner {position:relative;width:100%;height:100%;text-align:center;transition:transform 0.8s;transform-style:preserve-3d;border-radius:10px;box-shadow:var(--shadow);cursor:pointer;}
+.flip-card.flipped .flip-card-inner {transform:rotateY(180deg);}
+.flip-card-front, .flip-card-back {position:absolute;width:100%;height:100%;-webkit-backface-visibility:hidden;backface-visibility:hidden;border-radius:10px;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:0.5rem;}
+.flip-card-front {background-color:white;}
+.flip-card-back {background-color:var(--color-secondary);color:var(--color-bg);transform:rotateY(180deg);overflow-y:auto;}
+.flip-card-back ul {padding-left:0.5rem;text-align:left;margin-top:0.25rem;list-style:square; font-size: 0.75rem;}
+.flip-card-back ul li {margin-bottom:0.15rem;}
+.author-image {max-width:90%;max-height:90%;border-radius:8px;object-fit:contain;box-shadow:var(--shadow);}
+.works-list-front .flip-card-front {background-color:var(--color-secondary);color:var(--color-bg);overflow-y:auto;text-align:left; font-size: 0.75rem;}
+.works-list-front .flip-card-front ul {margin:0;padding-left:0.5rem;list-style:square;}
+.works-list-front .flip-card-front ul li {margin-bottom:0.15rem;}
+.works-list-front .flip-card-back {background-color:white;color:var(--color-text);flex-direction:column;justify-content:center;align-items:center; font-size: 0.75rem;}
+.works-list-front .flip-card-back .author-name {margin-top:0.25rem;font-weight:700;}
+.flash-info-section {background:white;max-width:960px;width:100%;margin-top:0;margin-bottom:1rem;padding:1rem;border-radius:10px;box-shadow:var(--shadow);}
+.flash-info-header {display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
+.flash-info-content {max-height:250px;overflow-y:auto;padding:0.5rem;border:2px solid var(--color-primary);border-radius:8px;background:var(--color-bg);font-size:1rem;line-height:1.4;white-space: pre-wrap;}
+.flash-info-keyword {font-weight:700;margin-bottom:0.5rem;font-size:1.1rem;color:var(--color-primary);}
+.flash-info-author-img {max-width:80px;max-height:80px;border-radius:8px;float:left;margin-right:10px;}
+.stats {font-size:0.9rem;margin-top:0.5rem;text-align:center;color:var(--color-primary);}
+@media (max-width: 768px) {
+  .flip-card {width:90vw;height:175px;}
+  .controls {flex-direction:column;gap:0.5rem;}
+  .flash-info-content {max-height:200px;}
+}
 </style>
 </head>
 <body>
-  <h1>UGC NET English Literature Study Hub</h1>
-  <div class="controls" aria-label="Study Filters and Controls">
-    <div><label for="module-select">Module:</label>
-      <select id="module-select" aria-label="Select Module"><option value="">--Select Module--</option></select>
-    </div>
-    <div><label for="chapter-select">Chapter:</label>
-      <select id="chapter-select" disabled aria-label="Select Chapter"><option value="">--Select Chapter--</option></select>
-    </div>
-    <div><label for="work-type-select">Work Type:</label>
-      <select id="work-type-select" aria-label="Filter by Work Type">
-        <option value="all">All</option>
-        <option value="Drama">Drama</option>
-        <option value="Poetry">Poetry</option>
-        <option value="Essay">Essay</option>
-        <option value="Play">Play</option>
-        <option value="Novel">Novel</option>
-      </select>
-    </div>
-    <div><label for="year-start">Year Start:</label>
-      <input type="number" id="year-start" placeholder="e.g. 1800" min="1000" max="2100" aria-label="Start Year" />
-    </div>
-    <div><label for="year-end">Year End:</label>
-      <input type="number" id="year-end" placeholder="e.g. 2000" min="1000" max="2100" aria-label="End Year" />
-    </div>
-    <div>
-      <button id="apply-filter-btn" title="Apply filters">Apply Filters</button>
-      <button id="clear-filter-btn" title="Clear all filters">Clear Filters</button>
-      <button id="rescan-btn" title="Reload data from CSV">Rescan Data</button>
-    </div>
-    <div>
-      <label for="mode-select">Flashcard Mode:</label>
-      <select id="mode-select" aria-label="Select Flashcard Display Mode">
-        <option value="authorfront">Author Image Front</option>
-        <option value="worksfront">Works Front</option>
-      </select>
-    </div>
-    <div>
-      <button id="toggle-flashcards-btn" aria-pressed="true">Hide Flashcards</button>
-    </div>
+<h1>UGC NET English Literature Study Hub</h1>
+<div class="controls" aria-label="Study Filters and Controls">
+  <div><label for="module-select">Module:</label>
+    <select id="module-select" aria-label="Select Module"><option value="">--Select Module--</option></select>
   </div>
-
-  <section class="flash-info-section" aria-label="Flash Info Section">
-    <div class="flash-info-header">
-      <h2>Flash Info Game</h2>
-      <button id="random-flash-info-btn" disabled>Show Random Flash Info</button>
-    </div>
-    <input type="text" id="search-flash-info" placeholder="Search flash info keywords..." aria-label="Search Flash Info" />
-    <div class="flash-info-keywords" id="flash-info-keywords" tabindex="0" style="margin-bottom:10px; font-weight: 600; color: var(--color-primary);">
-      <p>Select module & chapter to view Important Keywords here.</p>
-    </div>
-    <div class="flash-info-content" id="flash-info-content" tabindex="0" style="white-space: pre-wrap;">
-      <p>Load and select module/chapter to start.</p>
-    </div>
-  </section>
-
-  <div class="stats" role="region" aria-live="polite" id="stats-info">
-    Authors Loaded: 0 | Works Loaded: 0 | Flash Infos Loaded: 0
+  <div><label for="chapter-select">Chapter:</label>
+    <select id="chapter-select" disabled aria-label="Select Chapter"><option value="">--Select Chapter--</option></select>
   </div>
-
-  <div class="flashcard-container" id="flashcard-container" aria-label="Flashcards Section">
-    <!-- Flashcards will be injected here -->
+  <div><label for="work-type-select">Work Type:</label>
+    <select id="work-type-select" aria-label="Filter by Work Type">
+      <option value="all">All</option>
+      <option value="Drama">Drama</option>
+      <option value="Poetry">Poetry</option>
+      <option value="Essay">Essay</option>
+      <option value="Play">Play</option>
+      <option value="Novel">Novel</option>
+    </select>
   </div>
+  <div><label for="year-start">Year Start:</label>
+    <input type="number" id="year-start" placeholder="e.g. 1800" min="1000" max="2100" aria-label="Start Year" />
+  </div>
+  <div><label for="year-end">Year End:</label>
+    <input type="number" id="year-end" placeholder="e.g. 2000" min="1000" max="2100" aria-label="End Year" />
+  </div>
+  <div>
+    <button id="apply-filter-btn" title="Apply filters">Apply Filters</button>
+    <button id="clear-filter-btn" title="Clear all filters">Clear Filters</button>
+    <button id="rescan-btn" title="Reload data from CSV">Rescan Data</button>
+  </div>
+  <div>
+    <label for="mode-select">Flashcard Mode:</label>
+    <select id="mode-select" aria-label="Select Flashcard Display Mode">
+      <option value="authorfront">Author Image Front</option>
+      <option value="worksfront">Works Front</option>
+    </select>
+  </div>
+  <div>
+    <button id="toggle-flashcards-btn" aria-pressed="true">Hide Flashcards</button>
+  </div>
+</div>
+
+<section class="flash-info-section" aria-label="Flash Info Section">
+  <div class="flash-info-header">
+    <h2>Flash Info Game</h2>
+    <button id="random-flash-info-btn" disabled>Show Random Flash Info</button>
+  </div>
+  <div class="flash-info-content" id="flash-info-content" tabindex="0">
+    <p>Load and select module/chapter to start.</p>
+  </div>
+</section>
+
+<div class="stats" role="region" aria-live="polite" id="stats-info">
+  Authors Loaded: 0 | Works Loaded: 0 | Flash Infos Loaded: 0
+</div>
+
+<div class="flashcard-container" id="flashcard-container" aria-label="Flashcards Section">
+  <!-- Flashcards will be injected here -->
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
 <script>
 (function() {
   const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQolLlUE8ZSI3AQBWAjjsrhrAK6PdCsjviT94joVNZxZUpyre2vZXqzJFMGgnazCoGPvUICvcSnd0Sj/pub?output=csv";
   const AUTHOR_CACHE_KEY = "authorFlashcardsCache";
-  const FLASHINFO_CACHE_KEY = "flashInfoCache";
   let authors = [], flashInfos = [], filteredAuthors = [], filteredFlashInfos = [], currentFlashInfoIndicesShown = new Set();
-  let keywordsList = [];
   const moduleSelect = document.getElementById('module-select');
   const chapterSelect = document.getElementById('chapter-select');
   const workTypeSelect = document.getElementById('work-type-select');
@@ -137,8 +131,6 @@
   const flashcardContainer = document.getElementById('flashcard-container');
   const randomFlashInfoBtn = document.getElementById('random-flash-info-btn');
   const flashInfoContent = document.getElementById('flash-info-content');
-  const flashInfoKeywordsDiv = document.getElementById('flash-info-keywords');
-  const searchFlashInfoInput = document.getElementById('search-flash-info');
 
   function parseWorks(worksString) {
     if (!worksString) return [];
@@ -152,17 +144,6 @@
       const type = typeMatch ? typeMatch[1].trim() : '';
       const detail = detailMatch ? detailMatch[1].trim() : '';
       return { title, year, type, detail };
-    });
-  }
-
-  function parseKeywords(keywordsString) {
-    if (!keywordsString) return [];
-    return keywordsString.split(';').map(keyword => {
-      const trimmed = keyword.trim();
-      const detailMatch = trimmed.match(/\{([^}]*)\}/);
-      let keywordText = trimmed.replace(/\{[^}]*\}/g, '').trim();
-      let detail = detailMatch ? detailMatch[1].trim() : '';
-      return { keywordText, detail };
     });
   }
 
@@ -197,7 +178,6 @@
       });
     });
   }
-
 
   function uniqueValues(data, field) {
     return [...new Set(data.map(item => item[field]).filter(x => x && x.length > 0))].sort();
@@ -251,23 +231,56 @@
 
   function buildFlashInfoFromAuthors() {
     let combined = [];
+    // Add author-level flash info entries that have FlashInfoText
     flashInfos.forEach(item => {
-      combined.push(item);
+      if(item.FlashInfoText && item.FlashInfoText.trim() !== '') {
+        combined.push({
+          Module: item.Module,
+          Chapter: item.Chapter,
+          Title: item.AuthorName, // title is author name
+          ImageURL: item.ImageURL || '',
+          FlashInfoText: item.FlashInfoText,
+          Type: 'author'
+        });
+      }
     });
+    // Add work-level flash info entries for works with details
     authors.forEach(author => {
       author.works.forEach(work => {
         if(work.detail && work.detail.length > 0) {
           combined.push({
             Module: author.Module,
             Chapter: author.Chapter,
-            AuthorName: author.AuthorName,
-            Works: work.title,
-            ImportantKeywords: work.title,
+            Title: work.title,
             ImageURL: author.ImageURL,
-            FlashInfoText: work.detail.trim()
+            FlashInfoText: work.detail,
+            Type: 'work',
+            AuthorName: author.AuthorName
           });
         }
       });
+    });
+    // Add keyword-level flash info from ImportantKeywords column with details
+    authors.forEach(author => {
+      // Find row in flashInfos matching author+module+chapter to get keywords
+      const row = flashInfos.find(i => i.Module === author.Module && i.Chapter === author.Chapter && i.AuthorName === author.AuthorName);
+      if(row && row.ImportantKeywords){
+        const kws = row.ImportantKeywords.split(';').map(k=>k.trim()).filter(k => k.length>0);
+        kws.forEach(k=>{
+          const match = k.match(/^(.+?)(?:\s*\{(.*)\})?$/);
+          if(match){
+            const kwTitle = match[1].trim();
+            const kwDetail = match[2]?match[2].trim():'';
+            combined.push({
+              Module: author.Module,
+              Chapter: author.Chapter,
+              Title: kwTitle,
+              FlashInfoText: kwDetail,
+              Type: 'keyword'
+            });
+          }
+        });
+      }
     });
     return combined;
   }
@@ -332,58 +345,16 @@
     let filtered = flashInfos;
     const selectedModule = moduleSelect.value;
     const selectedChapter = chapterSelect.value;
-    const searchTerm = searchFlashInfoInput.value.trim().toLowerCase();
-    if(selectedModule) filtered = filtered.filter(item => item.Module === selectedModule);
-    else filtered = [];
-    if(selectedChapter) filtered = filtered.filter(item => item.Chapter === selectedChapter);
-    if(searchTerm) filtered = filtered.filter(item => (
-      (item.AuthorName && item.AuthorName.toLowerCase().includes(searchTerm)) ||
-      (item.Works && item.Works.toLowerCase().includes(searchTerm)) ||
-      (item.ImportantKeywords && item.ImportantKeywords.toLowerCase().includes(searchTerm))
-    ));
-    filteredFlashInfos = filtered;
+    // We don't filter keyword or work randomly by search anymore, whole flashInfos replaced below 
+    
+    if(selectedModule && selectedChapter){
+      filteredFlashInfos = buildFlashInfoFromAuthors().filter(i => i.Module === selectedModule && i.Chapter === selectedChapter);
+    } else {
+      filteredFlashInfos = [];
+    }
+    
     currentFlashInfoIndicesShown = new Set();
     randomFlashInfoBtn.disabled = filteredFlashInfos.length === 0;
-  }
-
-  // Function to render keywords from selected module and chapter 
-  function renderKeywords(module, chapter) {
-    if(!module || !chapter) {
-      flashInfoKeywordsDiv.innerHTML = '<p>Select module & chapter to view Important Keywords here.</p>';
-      return;
-    }
-    let filteredRows = [];
-    if(flashInfos && flashInfos.length > 0) {
-      filteredRows = flashInfos.filter(f => f.Module === module && f.Chapter === chapter);
-    }
-    // Extract keywords from filtered rows' ImportantKeywords field
-    let keywords = [];
-    filteredRows.forEach(row => {
-      if(row.ImportantKeywords) {
-        const kws = row.ImportantKeywords.split(';').map(k => k.trim()).filter(k => k.length > 0);
-        keywords = keywords.concat(kws);
-      }
-    });
-    // Remove duplicates with detail extraction {detail}
-    let uniqueKeywords = {};
-    keywords.forEach(k => {
-      const match = k.match(/^(.+?)(?:\s*\{(.*)\})?$/);
-      if(match) {
-        const key = match[1].trim();
-        const detail = match[2] ? match[2].trim() : '';
-        uniqueKeywords[key] = detail;
-      }
-    });
-    // Render keywords separately (title and detail)
-    if(Object.keys(uniqueKeywords).length === 0) {
-      flashInfoKeywordsDiv.innerHTML = '<p>No Important Keywords found for selected module and chapter.</p>';
-      return;
-    }
-    let html = '';
-    Object.entries(uniqueKeywords).forEach(([key, detail]) => {
-      html += `<div><strong>${key}</strong>${detail ? ': '+detail : ''}</div>`;
-    });
-    flashInfoKeywordsDiv.innerHTML = html;
   }
 
   function escapeHTML(text) {
@@ -394,7 +365,8 @@
 
   function showRandomFlashInfo() {
     if(filteredFlashInfos.length === 0) {
-      flashInfoContent.innerHTML = '<p>No flash info available for selected filters and search.</p>'; return;
+      flashInfoContent.innerHTML = '<p>No flash info available for selected module and chapter.</p>'; 
+      return;
     }
     if(currentFlashInfoIndicesShown.size >= filteredFlashInfos.length) currentFlashInfoIndicesShown.clear();
     let idx;
@@ -404,8 +376,10 @@
     currentFlashInfoIndicesShown.add(idx);
     const item = filteredFlashInfos[idx];
     let html = '';
-    if(item.ImageURL) html += `<img src="${item.ImageURL}" alt="Image of ${escapeHTML(item.AuthorName || '')}" class="flash-info-author-img" />`;
-    html += `<div class="flash-info-keyword">${escapeHTML(item.Works || '')}</div>`;
+    if(item.Type === 'author' || item.Type === 'work'){
+      if(item.ImageURL) html += `<img src="${item.ImageURL}" alt="Image of ${escapeHTML(item.AuthorName || item.Title || '')}" class="flash-info-author-img" />`;
+    }
+    html += `<div class="flash-info-keyword">${escapeHTML(item.Title || '')}</div>`;
     html += `<p>${escapeHTML(item.FlashInfoText || '')}</p>`;
     flashInfoContent.innerHTML = html;
   }
@@ -424,14 +398,12 @@
     workTypeSelect.value = 'all';
     yearStartInput.value = '';
     yearEndInput.value = '';
-    searchFlashInfoInput.value = '';
     filteredAuthors = [];
     filteredFlashInfos = [];
     currentFlashInfoIndicesShown.clear();
-    randomFlashInfoBtn.disabled = true;
     flashcardContainer.innerHTML = '';
     flashInfoContent.innerHTML = '<p>Load and select module/chapter to start.</p>';
-    flashInfoKeywordsDiv.innerHTML = '<p>Select module & chapter to view Important Keywords here.</p>';
+    randomFlashInfoBtn.disabled = true;
   }
 
   function populateChapters() {
@@ -439,13 +411,11 @@
     if(!selectedModule) {
       chapterSelect.innerHTML = '<option value="">--Select Chapter--</option>';
       chapterSelect.disabled = true;
-      flashInfoKeywordsDiv.innerHTML = '<p>Select module & chapter to view Important Keywords here.</p>';
       return;
     }
     const chapters = uniqueValues(flashInfos.filter(f => f.Module === selectedModule), 'Chapter');
     fillSelectOptions(chapterSelect, chapters, '--Select Chapter--');
     chapterSelect.disabled = false;
-    flashInfoKeywordsDiv.innerHTML = '<p>Select module & chapter to view Important Keywords here.</p>';
   }
 
   async function loadAndPrepareData(forceReload = false) {
@@ -453,11 +423,7 @@
     authors = processAuthorData(rawData);
     flashInfos = processFlashInfoData(rawData);
     filteredAuthors = [];
-    filteredFlashInfos = [];
     currentFlashInfoIndicesShown.clear();
-
-    // Prepare combined flash info (author level + works with details)
-    flashInfos = buildFlashInfoFromAuthors();
 
     const modulesFromFlashInfo = uniqueValues(flashInfos, 'Module');
     const modulesFromAuthors = uniqueValues(authors, 'Module');
@@ -471,11 +437,9 @@
   moduleSelect.addEventListener('change', () => {
     populateChapters();
     filteredAuthors = [];
-    filteredFlashInfos = [];
     currentFlashInfoIndicesShown.clear();
     flashcardContainer.innerHTML = '';
     flashInfoContent.innerHTML = '<p>Load and select module/chapter to start.</p>';
-    flashInfoKeywordsDiv.innerHTML = '<p>Select module & chapter to view Important Keywords here.</p>';
     applyFilters();
   });
 
@@ -503,10 +467,6 @@
     renderFlashcards();
   });
 
-  searchFlashInfoInput.addEventListener('input', () => {
-    filterFlashInfos();
-  });
-
   randomFlashInfoBtn.addEventListener('click', () => {
     showRandomFlashInfo();
   });
@@ -528,7 +488,6 @@
     filterAuthors();
     renderFlashcards();
     filterFlashInfos();
-    renderKeywords(moduleSelect.value, chapterSelect.value);
   }
 
   function processAuthorData(rows) {
@@ -544,7 +503,7 @@
   }
 
   function processFlashInfoData(rows) {
-    let flashInfoOnly = rows.map(row => ({
+    return rows.map(row => ({
       Module: row.Module || '',
       Chapter: row.Chapter || '',
       AuthorName: row.AuthorName || '',
@@ -553,10 +512,11 @@
       ImageURL: row.ImageURL || '',
       FlashInfoText: row.FlashInfoText || ''
     })).filter(f => f.Module && f.Chapter);
-    return flashInfoOnly;
   }
 
+  // Initialize the app
   loadAndPrepareData();
+
 })();
 </script>
 </body>
