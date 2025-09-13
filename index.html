@@ -56,14 +56,10 @@
   <h1>UGC NET English Literature Study Hub</h1>
   <div class="controls" aria-label="Study Filters and Controls">
     <div><label for="module-select">Module:</label>
-      <select id="module-select" aria-label="Select Module">
-        <option value="">--Select Module--</option>
-      </select>
+      <select id="module-select" aria-label="Select Module"><option value="">--Select Module--</option></select>
     </div>
     <div><label for="chapter-select">Chapter:</label>
-      <select id="chapter-select" disabled aria-label="Select Chapter">
-        <option value="">--Select Chapter--</option>
-      </select>
+      <select id="chapter-select" disabled aria-label="Select Chapter"><option value="">--Select Chapter--</option></select>
     </div>
     <div><label for="work-type-select">Work Type:</label>
       <select id="work-type-select" aria-label="Filter by Work Type">
@@ -98,7 +94,6 @@
     </div>
   </div>
 
-  <!-- Moved Flash Info Game above flashcards -->
   <section class="flash-info-section" aria-label="Flash Info Section">
     <div class="flash-info-header">
       <h2>Flash Info Game</h2>
@@ -141,22 +136,25 @@
   const flashInfoContent = document.getElementById('flash-info-content');
   const searchFlashInfoInput = document.getElementById('search-flash-info');
 
+  // Updated parseWorks that extracts optional details in curly braces {}
   function parseWorks(worksString) {
     if (!worksString) return [];
     return worksString.split(';').map(work => {
       const trimmed = work.trim();
+      const detailMatch = trimmed.match(/\{([^}]*)\}/);
       const yearMatch = trimmed.match(/\(([^)]+)\)/);
       const typeMatch = trimmed.match(/\[(.*?)\]/);
-      const title = trimmed.replace(/\([^)]*\)/g, '').replace(/\[.*?\]/g, '').trim();
+      let title = trimmed.replace(/\{[^}]*\}/g, '').replace(/\([^)]*\)/g, '').replace(/\[.*?\]/g, '').trim();
       const year = yearMatch ? yearMatch[1] : '';
       const type = typeMatch ? typeMatch[1].trim() : '';
-      return { title, year, type };
+      const detail = detailMatch ? detailMatch[1].trim() : '';
+      return { title, year, type, detail };
     });
   }
 
   function loadCSVWithCache(url, cacheKey) {
     return new Promise(resolve => {
-      localStorage.removeItem(cacheKey); // clear cache on rescan or fresh load
+      localStorage.removeItem(cacheKey); // force reload for fresh data on rescan
       Papa.parse(url, {
         download: true,
         header: true,
@@ -214,6 +212,30 @@
       }));
     }
     filteredAuthors = filtered;
+  }
+
+  // Modified: Include works' details as separate flash info items
+  function buildFlashInfoFromAuthors() {
+    let combined = [];
+    flashInfos.forEach(item => {
+      combined.push(item); // existing author flash infos
+    });
+    authors.forEach(author => {
+      author.works.forEach(work => {
+        if(work.detail && work.detail.length > 0) {
+          combined.push({
+            Module: author.Module,
+            Chapter: author.Chapter,
+            AuthorName: author.AuthorName,
+            Works: work.title,
+            ImportantKeywords: work.title, // also use title as keyword
+            ImageURL: author.ImageURL,
+            FlashInfoText: work.detail.trim()
+          });
+        }
+      });
+    });
+    return combined;
   }
 
   function renderFlashcards() {
@@ -370,7 +392,8 @@
   }
 
   function processFlashInfoData(rows) {
-    return rows.map(row => ({
+    // Original flash info from CSV (author-level)
+    let flashInfoOnly = rows.map(row => ({
       Module: row.Module || '',
       Chapter: row.Chapter || '',
       AuthorName: row.AuthorName || '',
@@ -379,6 +402,26 @@
       ImageURL: row.ImageURL || '',
       FlashInfoText: row.FlashInfoText || ''
     })).filter(f => f.Module && f.Chapter);
+
+    // Append work-detail flash info from authors
+    const authorsFromRows = processAuthorData(rows);
+    let workLevelFlashInfos = [];
+    authorsFromRows.forEach(author => {
+      author.works.forEach(work => {
+        if(work.detail && work.detail.length > 0) {
+          workLevelFlashInfos.push({
+            Module: author.Module,
+            Chapter: author.Chapter,
+            AuthorName: author.AuthorName,
+            Works: work.title,
+            ImportantKeywords: work.title,
+            ImageURL: author.ImageURL,
+            FlashInfoText: work.detail.trim()
+          });
+        }
+      });
+    });
+    return flashInfoOnly.concat(workLevelFlashInfos);
   }
 
   async function loadAndPrepareData() {
@@ -402,36 +445,5 @@
   workTypeSelect.addEventListener('change', () => {applyFilters();});
   applyFilterBtn.addEventListener('click', () => {applyFilters();});
   clearFilterBtn.addEventListener('click', () => {resetFilters();});
+  rescanBtn.addEventListener('click', () => {loadAndPrepareData();});
   modeSelect.addEventListener('change', () => {renderFlashcards();});
-  searchFlashInfoInput.addEventListener('input', () => {filterFlashInfos();});
-  randomFlashInfoBtn.addEventListener('click', () => {showRandomFlashInfo();});
-
-  toggleFlashcardsBtn.addEventListener('click', () => {
-    const isVisible = flashcardContainer.style.display !== 'none';
-    if (isVisible) {
-      flashcardContainer.style.display = 'none';
-      toggleFlashcardsBtn.textContent = 'Show Flashcards';
-      toggleFlashcardsBtn.setAttribute('aria-pressed', 'false');
-    } else {
-      flashcardContainer.style.display = 'flex';
-      toggleFlashcardsBtn.textContent = 'Hide Flashcards';
-      toggleFlashcardsBtn.setAttribute('aria-pressed', 'true');
-    }
-  });
-
-  rescanBtn.addEventListener('click', () => {
-    loadAndPrepareData();
-  });
-
-  function applyFilters() {
-    filterAuthors();
-    renderFlashcards();
-    filterFlashInfos();
-  }
-
-  // Initial data load
-  loadAndPrepareData();
-})();
-</script>
-</body>
-</html>
